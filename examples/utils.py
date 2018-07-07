@@ -53,7 +53,7 @@ def download_one_file(download_url,
         print('%s already exists' %local_dest)
     else:
         print('Downloading %s' %download_url)
-        local_file, _ = urllib.request.urlretrieve(download_url, local_dest)
+        local_file, _ = urllib.request.urlretrieve(download_url, local_dest, )
         file_stat = os.stat(local_dest)
         if expected_byte:
             if file_stat.st_size == expected_byte:
@@ -79,7 +79,28 @@ def download_mnist(path):
     expected_bytes = [9912422, 28881, 1648877, 4542]
 
     for filename, byte in zip(filenames, expected_bytes):
-        download_url = os.path.join(url, filename)
+        download_url =  os.path.join(url, filename)
+        download_url = download_url.replace('\\','/')   # 这里解决下载路径问题
+        local_dest = os.path.join(path, filename)
+        download_one_file(download_url, local_dest, byte, True)
+
+# 下载notMNIST
+def download_not_mnist(path):
+    """
+    Download and unzip the dataset mnist if it's not already downloaded
+    Download from http://yann.lecun.com/exdb/mnist
+    """
+    safe_mkdir(path)
+    url = 'https://github.com/davidflanagan/notMNIST-to-MNIST/raw/master'
+    filenames = ['train-images-idx3-ubyte.gz',
+                'train-labels-idx1-ubyte.gz',
+                't10k-images-idx3-ubyte.gz',
+                't10k-labels-idx1-ubyte.gz']
+    expected_bytes = [19997892, 29455, 3172375, 5118]
+
+    for filename, byte in zip(filenames, expected_bytes):
+        download_url =  os.path.join(url, filename)
+        download_url = download_url.replace('\\','/')   # 这里解决下载路径问题
         local_dest = os.path.join(path, filename)
         download_one_file(download_url, local_dest, byte, True)
 

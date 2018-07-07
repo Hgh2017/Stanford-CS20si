@@ -72,3 +72,4 @@ plt.plot(data[:,0], data[:,0] * w_out + b_out, 'r', label='Predicted data with s
 # plt.plot(data[:,0], data[:,0] * (-5.883589) + 85.124306, 'g', label='Predicted data with Huber loss')
 plt.legend()
 plt.show()
+pass

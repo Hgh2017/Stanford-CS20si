@@ -68,7 +68,7 @@ with tf.Session() as sess:
         for x, y in data:
             # Execute train_op and get the value of loss.
             # Don't forget to feed in data for placeholders
-            _, loss = ########## TO DO ############
+            # _, loss = ########## TO DO ############
             total_loss += loss
 
         print('Epoch {0}: {1}'.format(i, total_loss/n_samples))
@@ -77,7 +77,7 @@ with tf.Session() as sess:
     #############################
     ########## TO DO ############
     #############################
-    writer.close()
+    #writer.close()
     
     # Step 9: output the values of w and b
     w_out, b_out = None, None

@@ -1,3 +1,8 @@
+## CS20si的课程资源及作业代码
+
+- 课程Notes和PPT是从google doc上弄下来的，在docs中
+- 示例代码Fork自CS20si的Github，并在assignments中完成作业代码
+
 [![License](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
 [![Join the https://gitter.im/stanford-tensorflow-tutorials](https://badges.gitter.im/tflearn/tflearn.svg)](https://gitter.im/stanford-tensorflow-tutorials)
 

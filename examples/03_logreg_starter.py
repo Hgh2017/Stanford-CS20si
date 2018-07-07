@@ -39,7 +39,6 @@ test_data = None
 ########## TO DO ############
 #############################
 
-
 # create one iterator and initialize it with different datasets
 iterator = tf.data.Iterator.from_structure(train_data.output_types, 
                                            train_data.output_shapes)
@@ -58,7 +57,6 @@ w, b = None, None
 ########## TO DO ############
 #############################
 
-
 # Step 4: build model
 # the model that returns the logits.
 # this logits will be later passed through softmax layer
@@ -67,14 +65,12 @@ logits = None
 ########## TO DO ############
 #############################
 
-
 # Step 5: define loss function
 # use cross entropy of softmax of logits as the loss function
 loss = None
 #############################
 ########## TO DO ############
 #############################
-
 
 # Step 6: define optimizer
 # using Adamn Optimizer with pre-defined learning rate to minimize loss
