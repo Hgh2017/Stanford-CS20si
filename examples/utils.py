@@ -19,7 +19,7 @@ def huber_loss(labels, predictions, delta=14.0):
 def safe_mkdir(path):
     """ Create a directory if there isn't one already. """
     try:
-        os.mkdir(path)
+        os.makedirs(path)
     except OSError:
         pass
 

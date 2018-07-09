@@ -56,10 +56,10 @@ def word2vec(dataset):
 
         # define loss function to be NCE loss function
         loss = tf.reduce_mean(tf.nn.nce_loss(weights=nce_weight, 
-                                            biases=nce_bias, 
-                                            labels=target_words, 
-                                            inputs=embed, 
-                                            num_sampled=NUM_SAMPLED, 
+                                            biases=nce_bias, # (VOCAB_SIZE, EMBED_SIZE)
+                                            labels=target_words, # (BATCH_SIZE,num_true) num_true：正样本数量
+                                            inputs=embed, # (BATCH_SIZE, EMBED_SIZE)
+                                            num_sampled=NUM_SAMPLED, # 采样出多少个负样本
                                             num_classes=VOCAB_SIZE), name='loss')
 
     # Step 5: define optimizer
@@ -87,8 +87,11 @@ def word2vec(dataset):
         writer.close()
 
 def gen():
-    yield from word2vec_utils.batch_gen(DOWNLOAD_URL, EXPECTED_BYTES, VOCAB_SIZE, 
-                                        BATCH_SIZE, SKIP_WINDOW, VISUAL_FLD)
+    for item in word2vec_utils.batch_gen(DOWNLOAD_URL, EXPECTED_BYTES, VOCAB_SIZE,
+                                        BATCH_SIZE, SKIP_WINDOW, VISUAL_FLD):
+        yield item
+    #yield from word2vec_utils.batch_gen(DOWNLOAD_URL, EXPECTED_BYTES, VOCAB_SIZE,
+    #                                    BATCH_SIZE, SKIP_WINDOW, VISUAL_FLD)
 
 def main():
     dataset = tf.data.Dataset.from_generator(gen, 

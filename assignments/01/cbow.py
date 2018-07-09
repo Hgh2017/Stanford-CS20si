@@ -13,8 +13,8 @@ import numpy as np
 from tensorflow.contrib.tensorboard.plugins import projector
 import tensorflow as tf
 
-import utils
-import word2vec_utils
+from examples import utils
+from examples import word2vec_utils
 
 # Model hyperparameters
 VOCAB_SIZE = 50000
@@ -24,11 +24,12 @@ SKIP_WINDOW = 1             # the context window
 NUM_SAMPLED = 64            # number of negative examples to sample
 LEARNING_RATE = 1.0
 NUM_TRAIN_STEPS = 100000
-GRAPH_FLD = 'graphs/skip-gram/'
-VISUAL_FLD = 'visualization/skip-gram/'
-CHK_POINTS_FLD = 'checkpoints/skip-gram/'
+SAVE_FLD = '../'
+GRAPH_FLD = SAVE_FLD + 'graphs/cbow/'
+VISUAL_FLD = SAVE_FLD + 'visualization/cbow/'
+CHK_POINTS_FLD = SAVE_FLD + 'checkpoints/cbow/'
 CHK_POINT_FILE = CHK_POINTS_FLD + 'checkpoint'
-CHK_POINTS_PREFIX = CHK_POINTS_FLD + 'skip-gram'
+CHK_POINTS_PREFIX = CHK_POINTS_FLD + 'cbow'
 utils.safe_mkdir(CHK_POINTS_FLD)
 SKIP_STEP = 5000
 
@@ -37,7 +38,7 @@ DOWNLOAD_URL = 'http://mattmahoney.net/dc/text8.zip'
 EXPECTED_BYTES = 31344016
 NUM_VISUALIZE = 3000        # number of tokens to visualize
 
-class SkipGramModel:
+class CBOW:
     """ Build the graph for word2vec model """
     def __init__(self, dataset, vocab_size, embed_size, batch_size, num_sampled, learning_rate):
         self.vocab_size = vocab_size
@@ -54,7 +55,7 @@ class SkipGramModel:
         """
         with tf.name_scope('data'):
             self.iterator = self.dataset.make_initializable_iterator()
-            self.center_words, self.target_words = self.iterator.get_next()
+            self.target_words, self.center_words = self.iterator.get_next()
 
     def _create_embedding(self):
         """ Step 2 + 3: define weights and embedding lookup.
@@ -64,7 +65,7 @@ class SkipGramModel:
             self.embed_matrix = tf.get_variable('embed_matrix', 
                                                 shape=[self.vocab_size, self.embed_size],
                                                 initializer=tf.random_uniform_initializer())
-            self.embed = tf.nn.embedding_lookup(self.embed_matrix, self.center_words, name='embedding')
+            self.embed = tf.nn.embedding_lookup(self.embed_matrix, self.target_words, name='embedding')
 
     def _create_loss(self):
         """ Step 4: define the loss function """
@@ -77,10 +78,10 @@ class SkipGramModel:
 
             # define loss function to be NCE loss function
             self.loss = tf.reduce_mean(tf.nn.nce_loss(weights=nce_weight, 
-                                                biases=nce_bias, 
-                                                labels=self.target_words, 
-                                                inputs=self.embed, 
-                                                num_sampled=self.num_sampled, 
+                                                biases=nce_bias,
+                                                labels=self.center_words,
+                                                inputs=self.embed,
+                                                num_sampled=self.num_sampled,
                                                 num_classes=self.vocab_size), name='loss')
     def _create_optimizer(self):
         """ Step 5: define optimizer """
@@ -107,7 +108,6 @@ class SkipGramModel:
         saver = tf.train.Saver() # defaults to saving all variables - in this case embed_matrix, nce_weight, nce_bias
 
         initial_step = 0
-        utils.safe_mkdir('checkpoints')
         with tf.Session() as sess:
             sess.run(self.iterator.initializer)
             sess.run(tf.global_variables_initializer())
@@ -171,14 +171,14 @@ class SkipGramModel:
             saver_embed.save(sess, os.path.join(visual_fld, 'model.ckpt'), 1)
 
 def gen():
-    yield from word2vec_utils.batch_gen(DOWNLOAD_URL, EXPECTED_BYTES, VOCAB_SIZE,
-                                        BATCH_SIZE, SKIP_WINDOW, VISUAL_FLD)
+    yield from word2vec_utils.batch_gen_for_cbow(DOWNLOAD_URL, EXPECTED_BYTES, VOCAB_SIZE,
+                                                 BATCH_SIZE, SKIP_WINDOW, VISUAL_FLD)
 
 def main():
     dataset = tf.data.Dataset.from_generator(gen,
                                 (tf.int32, tf.int32), 
                                 (tf.TensorShape([BATCH_SIZE]), tf.TensorShape([BATCH_SIZE, 1])))
-    model = SkipGramModel(dataset, VOCAB_SIZE, EMBED_SIZE, BATCH_SIZE, NUM_SAMPLED, LEARNING_RATE)
+    model = CBOW(dataset, VOCAB_SIZE, EMBED_SIZE, BATCH_SIZE, NUM_SAMPLED, LEARNING_RATE)
     model.build_graph()
     model.train(NUM_TRAIN_STEPS)
     model.visualize(VISUAL_FLD, NUM_VISUALIZE)
