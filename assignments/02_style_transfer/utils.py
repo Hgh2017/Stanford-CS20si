@@ -56,6 +56,6 @@ def save_image(path, image):
 def safe_mkdir(path):
     """ Create a directory if there isn't one already. """
     try:
-        os.mkdir(path)
+        os.makedirs(path)
     except OSError:
         pass

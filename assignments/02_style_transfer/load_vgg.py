@@ -17,7 +17,7 @@ import utils
 
 # VGG-19 parameters file
 VGG_DOWNLOAD_LINK = 'http://www.vlfeat.org/matconvnet/models/imagenet-vgg-verydeep-19.mat'
-VGG_FILENAME = 'imagenet-vgg-verydeep-19.mat'
+VGG_FILENAME = '../data/imagenet-vgg-verydeep-19.mat'
 EXPECTED_BYTES = 534904783
 
 class VGG(object):
@@ -54,7 +54,12 @@ class VGG(object):
         """
         ###############################
         ## TO DO
-        out = None
+        with tf.variable_scope(layer_name) as scope:
+            W,b = self._weights(layer_idx, layer_name)
+            W = tf.constant(W, name='weights')
+            b = tf.constant(b, name='bias')
+            conv = tf.nn.conv2d(prev_layer,W,strides=[1, 1, 1, 1],padding='SAME')
+            out = tf.nn.relu(conv+b)
         ###############################
         setattr(self, layer_name, out)
 
@@ -71,7 +76,8 @@ class VGG(object):
         """
         ###############################
         ## TO DO
-        out = None
+        with tf.variable_scope(layer_name):
+            out = tf.nn.avg_pool(prev_layer,[1,2,2,1],[1,2,2,1],padding='SAME')
         ###############################
         setattr(self, layer_name, out)
 

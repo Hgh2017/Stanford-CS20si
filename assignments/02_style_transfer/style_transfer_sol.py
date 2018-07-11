@@ -8,9 +8,17 @@ import tensorflow as tf
 import load_vgg_sol
 import utils
 
+SAVE_FLD = '../'
+GRAPH_FLD = SAVE_FLD + 'graphs/style_transfer_sol/'
+VISUAL_FLD = SAVE_FLD + 'visualization/style_transfer_sol/'
+CHK_POINTS_FLD = SAVE_FLD + 'checkpoints/style_transfer_sol/'
+CHK_POINT_FILE = CHK_POINTS_FLD + 'checkpoint'
+CHK_POINTS_PREFIX = CHK_POINTS_FLD + 'style_transfer_sol'
+OUTPUT_FLD = 'outputs/'
+
 def setup():
-    utils.safe_mkdir('checkpoints')
-    utils.safe_mkdir('outputs')
+    utils.safe_mkdir(CHK_POINTS_FLD)
+    utils.safe_mkdir(OUTPUT_FLD)
 
 class StyleTransfer(object):
     def __init__(self, content_img, style_img, img_width, img_height):
@@ -186,7 +194,7 @@ class StyleTransfer(object):
             ## 1. initialize your variables
             ## 2. create writer to write your graph
             sess.run(tf.global_variables_initializer())
-            writer = tf.summary.FileWriter('graphs/style_stranfer', sess.graph)
+            writer = tf.summary.FileWriter(GRAPH_FLD, sess.graph)
             ###############################
             sess.run(self.input_img.assign(self.initial_img))
 
@@ -196,7 +204,7 @@ class StyleTransfer(object):
             ## 1. create a saver object
             ## 2. check if a checkpoint exists, restore the variables
             saver = tf.train.Saver()
-            ckpt = tf.train.get_checkpoint_state(os.path.dirname('checkpoints/style_transfer/checkpoint'))
+            ckpt = tf.train.get_checkpoint_state(os.path.dirname(CHK_POINT_FILE))
             if ckpt and ckpt.model_checkpoint_path:
                 saver.restore(sess, ckpt.model_checkpoint_path)
             ##############################
@@ -234,7 +242,7 @@ class StyleTransfer(object):
                     if (index + 1) % 20 == 0:
                         ###############################
                         ## TO DO: save the variables into a checkpoint
-                        saver.save(sess, 'checkpoints/style_stranfer/style_transfer', index)
+                        saver.save(sess, CHK_POINTS_PREFIX, index)
                         ###############################
 
 if __name__ == '__main__':
