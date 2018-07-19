@@ -1,4 +1,3 @@
-
 *.pdf
 
 
@@ -21,3 +20,4 @@ assignments/graphs/*
 assignments/checkpoints/*
 assignments/visualization/*
 assignments/02_style_transfer/outputs
+.vscode

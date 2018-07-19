@@ -24,7 +24,7 @@ def vocab_decode(array, vocab):
     return ''.join([vocab[x - 1] for x in array])
 
 def read_data(filename, vocab, window, overlap):
-    lines = [line.strip() for line in open(filename, 'r').readlines()]
+    lines = [line.strip() for line in open(filename, 'r', encoding='UTF-8').readlines()]
     while True:
         random.shuffle(lines)
 
