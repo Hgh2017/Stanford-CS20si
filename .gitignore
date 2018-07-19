@@ -1,10 +1,23 @@
 
 *.pdf
 
+
 *.SUNet
+
 *.pyc
+
 .env/*
+
 examples/data
+
 examples/graphs/*
+
 examples/checkpoints/*
 examples/visualization/*
+.idea
+assignments/data
+assignments/graphs/*
+
+assignments/checkpoints/*
+assignments/visualization/*
+assignments/02_style_transfer/outputs

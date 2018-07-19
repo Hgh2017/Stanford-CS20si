@@ -259,6 +259,7 @@ class StyleTransfer(object):
 
 if __name__ == '__main__':
     setup()
-    machine = StyleTransfer('content/deadpool.jpg', 'styles/resized_guernica.jpg', 333, 250)
+    #machine = StyleTransfer('content/deadpool.jpg', 'styles/pattern.jpg', 333, 250)
+    machine = StyleTransfer('content/ink.jpg', 'styles/starry_night.jpg', 800, 600)
     machine.build()
     machine.train(300)
